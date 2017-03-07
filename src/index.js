@@ -1,12 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { getRoutes } from './App';
 import './index.css';
 
-import {Router, Route, Link, browserHistory } from 'react-router'
-
+//import {App, Index, UsersIndex, User, Users, About} from './test'
 
 ReactDOM.render(
-  <App />,
+  getRoutes(),
   document.getElementById('root')
 );
+
+
+/*ReactDOM.render((
+  <Router history={browserHistory}>
+    <Route path="/" component={App}>
+      <IndexRoute component={Index}/>
+      <Route path="/index" component={Index}/>
+      <Route path="/about" component={About}/>
+    </Route>
+  </Router>
+), document.getElementById('root'))
+*/

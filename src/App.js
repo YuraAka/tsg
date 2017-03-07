@@ -1,44 +1,95 @@
 import React, { Component } from 'react';
 import './App.css';
+import { Link, Router, Route, browserHistory, IndexRoute } from 'react-router'
+import auth from './auth'
 
-class App extends Component {
+export function getRoutes() {
+  return (
+  <Router history={browserHistory}>
+    <Route path="/" component={App}>
+      <IndexRoute component={Login}/>
+      <Route path="login" component={Login} />
+      <Route path="register" component={Registration} />
+      
+      <Route path="news" component={News} />
+      <Route path="myflat" component={MyFlat} />
+    </Route>
+  </Router>
+  )
+}
+
+export class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      loggedIn: true //auth.loggedIn()
+    }
+  }
+
+  componentWillMount() {
+    //auth.onChange = (loggedIn) => this.setState({loggedIn})
+    //auth.login()
+  }
+
   render() {
-    /*return (
+    var menuItems = []
+    if (this.state.loggedIn) {
+      menuItems = [
+        {
+          title: 'Новости',
+          link: '/news'
+        },
+        {
+          title: 'Моя квартира',
+          link: '/myflat'
+        }
+      ]
+    } else {
+      menuItems = [
+        {
+          title: 'Вход',
+          link: '/login'
+        },
+        {
+          title: 'Регистрация',
+          link: '/register'
+        }
+      ]
+    }
+
+    return (
       <div className="App">
         <Header/>
         <div>
-          <Menu items={[
-            {
-              title: 'Вход',
-              url: 'yandex.ru'
-            },
-            {
-              title: 'Регистрация',
-              url: 'google.com'
-            }
-          ]}/>
+          <Menu items={menuItems}/>
           {this.props.children}
         </div>
       </div>
     )
-  }*/
-    return (
-      <div>
-        hello
-      </div>
-    )
   }
 }
 
-class Login extends Component {
+export class Login extends Component {
   render() {
-    return <div>login</div>
+    return (<div>login</div>)
   }
 }
 
-class Registration extends Component {
+export class Registration extends Component {
   render() {
     return <div>registration</div>
+  }
+}
+
+export class News extends Component {
+  render() {
+    return <div>news</div>
+  }
+}
+
+export class MyFlat extends Component {
+  render() {
+    return <div>myflat</div>
   }
 }
 
@@ -73,14 +124,17 @@ class Header extends Component {
   }
 }
 
+const ACTIVE = { color: 'red' }
+
 class Menu extends Component {
   render() {
     return (
     <div>
-      <div>{this.props.items.map((item) => <a key={item.title} href={item.url}>{item.title}</a>)}</div>
+      <div>{this.props.items.map((item) => 
+        <Link key={item.title} to={item.link} activeStyle={ACTIVE}>{item.title}</Link>)
+        }
+      </div>
     </div>
     )
   }
 }
-
-export default App;
