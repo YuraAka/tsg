@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import { getRoutes } from './App';
+import { getRoutes } from './route';
 import './index.css';
 
 //import {App, Index, UsersIndex, User, Users, About} from './test'
