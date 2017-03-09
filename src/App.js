@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Link, IndexRoute, Router, Route, browserHistory, withRouter } from 'react-router'
+import { Link, IndexRoute, Router, Route, browserHistory } from 'react-router'
 import auth from './auth'
 
 export class App extends Component {
@@ -51,6 +51,7 @@ class Login extends Component {
 
     const { location } = this.props
 
+    // anti-react pattern, but I don't know how to make better (thru callback)
     if (location.state && location.state.nextPathname !== '/logout') {
       this.props.router.replace(location.state.nextPathname)
     } else {
@@ -194,7 +195,7 @@ export function getRoutes() {
   <Router history={browserHistory}>
     <Route path='/' component={App}>
       <IndexRoute component={Login} onEnter={redirToNews}/>
-      <Route path='login' component={withRouter(Login)} onEnter={redirToNews}/>
+      <Route path='login' component={Login} onEnter={redirToNews}/>
       <Route path='logout' onEnter={logout}/>
       <Route path='register' component={Registration} onEnter={redirToNews}/>
       
