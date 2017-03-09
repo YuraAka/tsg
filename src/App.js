@@ -1,67 +1,27 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Link, Router, Route, browserHistory, IndexRoute } from 'react-router'
+import { Link, IndexRoute, Router, Route, browserHistory, withRouter } from 'react-router'
 import auth from './auth'
-
-export function getRoutes() {
-  return (
-  <Router history={browserHistory}>
-    <Route path="/" component={App}>
-      <IndexRoute component={Login}/>
-      <Route path="login" component={Login} />
-      <Route path="register" component={Registration} />
-      
-      <Route path="news" component={News} />
-      <Route path="myflat" component={MyFlat} />
-    </Route>
-  </Router>
-  )
-}
 
 export class App extends Component {
   constructor() {
     super();
+    auth.login()
     this.state = {
-      loggedIn: true //auth.loggedIn()
+      loggedIn: auth.loggedIn()
     }
   }
 
-  componentWillMount() {
-    //auth.onChange = (loggedIn) => this.setState({loggedIn})
-    //auth.login()
+  componentDidMount() {
+    auth.onChange = (loggedIn) => this.setState({loggedIn})
   }
 
   render() {
-    var menuItems = []
-    if (this.state.loggedIn) {
-      menuItems = [
-        {
-          title: 'Новости',
-          link: '/news'
-        },
-        {
-          title: 'Моя квартира',
-          link: '/myflat'
-        }
-      ]
-    } else {
-      menuItems = [
-        {
-          title: 'Вход',
-          link: '/login'
-        },
-        {
-          title: 'Регистрация',
-          link: '/register'
-        }
-      ]
-    }
-
     return (
-      <div className="App">
+      <div className='App'>
         <Header/>
         <div>
-          <Menu items={menuItems}/>
+          <Menu loggedIn={this.state.loggedIn}/>
           {this.props.children}
         </div>
       </div>
@@ -69,49 +29,83 @@ export class App extends Component {
   }
 }
 
-export class Login extends Component {
+class Login extends Component {
+  constructor() {
+    super()
+    this.state = {
+      error: false,
+      flat: null,
+      password: null
+    };
+  }
+
+  onSubmit(event) {
+    event.preventDefault()
+    auth.login(this.state.flat, this.state.password, this.onLoginCheck.bind(this))
+  }
+
+  onLoginCheck(loggedIn) {
+    if (!loggedIn) {
+      return this.setState({ error: true })
+    }
+
+    const { location } = this.props
+
+    if (location.state && location.state.nextPathname !== '/logout') {
+      this.props.router.replace(location.state.nextPathname)
+    } else {
+      this.props.router.replace('/news')
+    }
+  }
+
+  onFlatChange(event) {
+    this.setState({flat: event.target.value})
+  }
+
+  onPasswordChange(event) {
+    this.setState({password: event.target.value})
+  }
+
   render() {
-    return (<div>login</div>)
+    return (
+      <div>
+        <p>Login</p>
+        <form onSubmit={this.onSubmit.bind(this)}>
+          <label><input placeholder='flat' onChange={this.onFlatChange.bind(this)}/></label>
+          <label><input placeholder='password' onChange={this.onPasswordChange.bind(this)}/></label> (hint: 123)<br />
+          <button type='submit'>login</button>
+          {this.state.error && (
+            <p>Access denied</p>
+          )}
+        </form>
+      </div>
+    )
   }
 }
 
-export class Registration extends Component {
+class Registration extends Component {
   render() {
     return <div>registration</div>
   }
 }
 
-export class News extends Component {
+class News extends Component {
   render() {
     return <div>news</div>
   }
 }
 
-export class MyFlat extends Component {
+class MyFlat extends Component {
   render() {
     return <div>myflat</div>
   }
 }
 
-/*class UnregisteredView extends Component {
+class NotFound extends Component {
   render() {
-    const selected = this.props.select === 'login' ? <Login/> : <Registration/>
-    return (
-    <div>
-      <Menu items={[
-        {
-          title: 'Вход',
-          url: 'yandex.ru'
-        },
-        {
-          title: 'Регистрация',
-          url: 'google.com'
-        }
-      ]}/>
-      {selected}
-    </div>)
+    return (<div>Not found</div>)
   }
-}*/
+}
 
 class Header extends Component {
   render() {
@@ -127,14 +121,87 @@ class Header extends Component {
 const ACTIVE = { color: 'red' }
 
 class Menu extends Component {
+  constructor() {
+    super();
+    this.state = {
+      unregItems : [
+        {
+          title: 'Вход',
+          link: '/login'
+        },
+        {
+          title: 'Регистрация',
+          link: '/register'
+        }
+      ],
+      regItems : [
+        {
+          title: 'Новости',
+          link: '/news'
+        },
+        {
+          title: 'Моя квартира',
+          link: '/myflat'
+        },
+        {
+          title: 'Выход',
+          link: '/logout'
+        }
+      ]
+    }
+  }
   render() {
+    const items = this.props.loggedIn ? this.state.regItems : this.state.unregItems
     return (
     <div>
-      <div>{this.props.items.map((item) => 
+      <div>{items.map((item) => 
         <Link key={item.title} to={item.link} activeStyle={ACTIVE}>{item.title}</Link>)
         }
       </div>
     </div>
     )
   }
+}
+
+function requireAuth(nextState, replace) {
+  if (!auth.loggedIn()) {
+    replace({
+      pathname: '/login',
+      state: { nextPathname: nextState.location.pathname }
+    })
+  }
+}
+
+function redirToNews(nextState, replace) {
+  if (auth.loggedIn()) {
+    replace({
+      pathname: '/news',
+      state: { nextPathname: nextState.location.pathname }
+    })
+  }
+}
+
+function logout(nextState, replace) {
+  auth.logout()
+  replace({
+    pathname: '/login',
+    state: { nextPathname: nextState.location.pathname }
+  })
+}
+
+export function getRoutes() {
+  return (
+  <Router history={browserHistory}>
+    <Route path='/' component={App}>
+      <IndexRoute component={Login} onEnter={redirToNews}/>
+      <Route path='login' component={withRouter(Login)} onEnter={redirToNews}/>
+      <Route path='logout' onEnter={logout}/>
+      <Route path='register' component={Registration} onEnter={redirToNews}/>
+      
+      <Route path='news' component={News} onEnter={requireAuth}/>
+      <Route path='myflat' component={MyFlat} onEnter={requireAuth}/>
+    </Route>
+    <Route path='*' component={NotFound}/>
+  </Router>
+  )
 }
