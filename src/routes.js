@@ -1,9 +1,10 @@
-import {App, Login, Registration, News, MyFlat, NotFound} from './App'
+//import {App, Login, Registration, News, MyFlat, NotFound} from './App'
 import { IndexRoute, Router, Route, browserHistory } from 'react-router'
-import auth from './auth'
-import React from 'react';
+import Layout from './components/layout'
+//import auth from './auth'
+import React from 'react'
 
-function requireAuth(nextState, replace) {
+/*function requireAuth(nextState, replace) {
   if (!auth.loggedIn()) {
     replace({
       pathname: '/login',
@@ -29,8 +30,8 @@ function logout(nextState, replace) {
   })
 }
 
-export function getRoutes() {
-  return (
+
+const routes = (
   <Router history={browserHistory}>
     <Route path='/' component={App}>
       <IndexRoute component={Login} onEnter={redirToNews}/>
@@ -43,5 +44,13 @@ export function getRoutes() {
     </Route>
     <Route path='*' component={NotFound}/>
   </Router>
-  )
-}
+)*/
+
+const routes = (
+  <Router history={browserHistory}>
+    <Route path='/' component={Layout}>
+    </Route>
+  </Router>
+)
+
+export default routes

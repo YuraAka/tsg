@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import { Link } from 'react-router'
 import auth from './auth'
 
@@ -99,12 +98,6 @@ export class News extends Component {
 export class MyFlat extends Component {
   render() {
     return <div>myflat</div>
-  }
-}
-
-export class NotFound extends Component {
-  render() {
-    return (<div>Not found</div>)
   }
 }
 
