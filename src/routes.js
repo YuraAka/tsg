@@ -1,6 +1,9 @@
 //import {App, Login, Registration, News, MyFlat, NotFound} from './App'
 import { IndexRoute, Router, Route, browserHistory } from 'react-router'
 import Layout from './components/layout'
+import NotFoundPage from './components/not_found_page'
+import LoginPage from './components/login_page'
+import RegisterPage from './components/register_page'
 //import auth from './auth'
 import React from 'react'
 
@@ -49,6 +52,10 @@ const routes = (
 const routes = (
   <Router history={browserHistory}>
     <Route path='/' component={Layout}>
+      <IndexRoute component={LoginPage}/>
+      <Route path='login' component={LoginPage}/>
+      <Route path='register' component={RegisterPage}/>
+      <Route path='*' component={NotFoundPage}/>
     </Route>
   </Router>
 )
