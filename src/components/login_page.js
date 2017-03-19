@@ -1,18 +1,40 @@
 import React from 'react'
 
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
+
 export default class LoginPage extends React.Component {
   constructor() {
     super()
     this.state = {
       error: false,
       flat: null,
-      password: null
+      password: null,
+      authed: false
     };
   }
 
   onSubmit(event) {
     event.preventDefault()
+    console.info('hello')
     //auth.login(this.state.flat, this.state.password, this.onLoginCheck.bind(this))
+    fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'flat': this.state.flat,
+        'password': this.state.password, // todo use hash
+      })
+    }).then(res => {
+      return res.json()
+    }).then(json => {
+      console.info('receive', json)
+      this.setState({authed: true});
+    }).catch(err => {
+      console.error('not a json' + err)
+    })
   }
 
   onLoginCheck(loggedIn) {

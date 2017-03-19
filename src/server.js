@@ -1,11 +1,13 @@
 import path from 'path'
 import { Server } from 'http'
 import Express from 'express'
+import Stormpath from 'express-stormpath'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { match, RouterContext } from 'react-router'
 import routes from './routes'
 import NotFoundPage from './components/not_found_page'
+import bodyParser from 'body-parser'
 
 // initialize the server and configure support for ejs templates
 const app = new Express()
@@ -15,7 +17,17 @@ app.set('views', path.join(__dirname, 'views'))
 // define the folder that will be used for static assets
 app.use(Express.static(path.join(__dirname, 'static')))
 
+app.use(bodyParser.json())       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}))
+
 // universal routing and rendering
+app.post('/api/auth', (req, res) => {
+  console.info('YURAS BODY: ', req.body)
+  res.status(200).send(JSON.stringify({token: 'yuraaka123'}))
+})
+
 app.get('*', (req, res) => {
   match(
     { routes, location: req.url },
