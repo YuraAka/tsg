@@ -1,7 +1,9 @@
 import React from 'react'
+import Promise from 'es6-promise'
+import 'isomorphic-fetch'
+import auth from '../auth'
 
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
+Promise.polyfill()
 
 export default class LoginPage extends React.Component {
   constructor() {
@@ -16,25 +18,7 @@ export default class LoginPage extends React.Component {
 
   onSubmit(event) {
     event.preventDefault()
-    console.info('hello')
-    //auth.login(this.state.flat, this.state.password, this.onLoginCheck.bind(this))
-    fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'flat': this.state.flat,
-        'password': this.state.password, // todo use hash
-      })
-    }).then(res => {
-      return res.json()
-    }).then(json => {
-      console.info('receive', json)
-      this.setState({authed: true});
-    }).catch(err => {
-      console.error('not a json' + err)
-    })
+    auth.login(this.state.flat, this.state.password, this.onLoginCheck.bind(this))
   }
 
   onLoginCheck(loggedIn) {
@@ -43,7 +27,7 @@ export default class LoginPage extends React.Component {
     }
 
     const { location } = this.props
-
+    this.setState({ error: false })
     // anti-react pattern, but I don't know how to make better (thru callback)
     if (location.state && location.state.nextPathname !== '/logout') {
       this.props.router.replace(location.state.nextPathname)
