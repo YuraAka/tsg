@@ -4,10 +4,21 @@ import Layout from './components/layout'
 import NotFoundPage from './components/not_found_page'
 import LoginPage from './components/login_page'
 import RegisterPage from './components/register_page'
-//import auth from './auth'
+import HomePage from './components/home_page'
+import FlatPage from './components/flat_page'
+import WithAuth from './components/protector'
+import auth from './auth'
 import React from 'react'
 
-/*function requireAuth(nextState, replace) {
+function isClient() {
+  return (typeof window !== 'undefined' && window.document && window.document.createElement)
+}
+
+function requireAuth(nextState, replace) {
+  if (!isClient()) {
+    return
+  }
+
   if (!auth.loggedIn()) {
     replace({
       pathname: '/login',
@@ -16,10 +27,14 @@ import React from 'react'
   }
 }
 
-function redirToNews(nextState, replace) {
+function redirToHome(nextState, replace) {
+  if (!isClient()) {
+    return
+  }
+
   if (auth.loggedIn()) {
     replace({
-      pathname: '/news',
+      pathname: '/home',
       state: { nextPathname: nextState.location.pathname }
     })
   }
@@ -34,30 +49,31 @@ function logout(nextState, replace) {
 }
 
 
-const routes = (
+/*const routes = (
   <Router history={browserHistory}>
-    <Route path='/' component={App}>
-      <IndexRoute component={Login} onEnter={redirToNews}/>
-      <Route path='login' component={Login} onEnter={redirToNews}/>
+    <Route path='/' component={Layout}>
+      <IndexRoute component={LoginPage} onEnter={redirToHome}/>
+      <Route path='login' component={LoginPage} onEnter={redirToHome}/>
       <Route path='logout' onEnter={logout}/>
-      <Route path='register' component={Registration} onEnter={redirToNews}/>
+      <Route path='register' component={RegisterPage} onEnter={redirToHome}/>
       
-      <Route path='news' component={News} onEnter={requireAuth}/>
-      <Route path='myflat' component={MyFlat} onEnter={requireAuth}/>
+      <Route path='home' component={HomePage} onEnter={requireAuth}/>
+      <Route path='flat' component={FlatPage} onEnter={requireAuth}/>
     </Route>
-    <Route path='*' component={NotFound}/>
+    <Route path='*' component={NotFoundPage}/>
   </Router>
 )*/
 
 const routes = (
-  <Router history={browserHistory}>
-    <Route path='/' component={Layout}>
-      <IndexRoute component={LoginPage}/>
-      <Route path='login' component={LoginPage}/>
-      <Route path='register' component={RegisterPage}/>
-      <Route path='*' component={NotFoundPage}/>
-    </Route>
-  </Router>
+  //<Router history={browserHistory}>
+  <Route path='/' component={Layout}>
+    <IndexRoute component={WithAuth(HomePage)} />
+    <Route path='home' component={WithAuth(HomePage)} />
+    <Route path='login' component={LoginPage} />
+    <Route path='register' component={RegisterPage} />
+    <Route path='*' component={NotFoundPage} />
+  </Route>
+  //</Router>
 )
 
 export default routes

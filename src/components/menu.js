@@ -20,11 +20,11 @@ export default class Menu extends React.Component {
       regItems : [
         {
           title: 'Новости',
-          link: '/news'
+          link: '/home'
         },
         {
           title: 'Моя квартира',
-          link: '/myflat'
+          link: '/flat'
         },
         {
           title: 'Выход',
@@ -35,7 +35,7 @@ export default class Menu extends React.Component {
   }
 
   render() {
-    const items = this.props.loggedIn ? this.state.regItems : this.state.unregItems
+    const items = this.context.loggedIn ? this.state.regItems : this.state.unregItems
     return (
     <div>
       <div>{items.map((item) => 
@@ -46,3 +46,8 @@ export default class Menu extends React.Component {
     )
   }
 }
+
+/*
+Menu.childContextTypes = {
+    loggedIn: React.PropTypes.bool
+}*/

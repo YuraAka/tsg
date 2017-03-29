@@ -37,20 +37,21 @@ export default class LoginPage extends React.Component {
   }
 
   onFlatChange(event) {
-    this.setState({flat: event.target.value})
+    this.setState({ flat: event.target.value })
   }
 
   onPasswordChange(event) {
-    this.setState({password: event.target.value})
+    this.setState({ password: event.target.value })
   }
 
   render() {
+    console.info(this.props.env)
     return (
       <div>
         <p>Login</p>
         <form onSubmit={this.onSubmit.bind(this)}>
-          <label><input placeholder='flat' onChange={this.onFlatChange.bind(this)}/></label>
-          <label><input placeholder='password' onChange={this.onPasswordChange.bind(this)}/></label> (hint: 123)<br />
+          <label><input placeholder='flat' onChange={this.onFlatChange.bind(this)} /></label>
+          <label><input placeholder='password' onChange={this.onPasswordChange.bind(this)} /></label> (hint: 123)<br />
           <button type='submit'>login</button>
           {this.state.error && (<p>Access denied</p>)}
         </form>
