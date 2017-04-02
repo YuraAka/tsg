@@ -2,40 +2,35 @@ import React from 'react'
 import {Link} from 'react-router'
 
 const ACTIVE = { color: 'red' }
+const ITEMS_FOR_VISITORS = [
+  {
+    title: 'Вход',
+    link: '/login'
+  },
+  {
+    title: 'Регистрация',
+    link: '/register'
+  }
+]
+
+const ITEMS_FOR_USERS = [
+  {
+    title: 'Новости',
+    link: '/home'
+  },
+  {
+    title: 'Моя квартира',
+    link: '/flat'
+  },
+  {
+    title: 'Выход',
+    link: '/logout'
+  }
+]
 
 export default class Menu extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      unregItems : [
-        {
-          title: 'Вход',
-          link: '/login'
-        },
-        {
-          title: 'Регистрация',
-          link: '/register'
-        }
-      ],
-      regItems : [
-        {
-          title: 'Новости',
-          link: '/home'
-        },
-        {
-          title: 'Моя квартира',
-          link: '/flat'
-        },
-        {
-          title: 'Выход',
-          link: '/logout'
-        }
-      ]
-    }
-  }
-
   render() {
-    const items = this.context.loggedIn ? this.state.regItems : this.state.unregItems
+    const items = this.context.loggedIn ? ITEMS_FOR_USERS : ITEMS_FOR_VISITORS
     return (
     <div>
       <div>{items.map((item) => 
@@ -47,7 +42,6 @@ export default class Menu extends React.Component {
   }
 }
 
-/*
-Menu.childContextTypes = {
-    loggedIn: React.PropTypes.bool
-}*/
+Menu.contextTypes = {
+  loggedIn: React.PropTypes.bool
+}

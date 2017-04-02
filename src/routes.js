@@ -6,20 +6,11 @@ import LoginPage from './components/login_page'
 import RegisterPage from './components/register_page'
 import HomePage from './components/home_page'
 import FlatPage from './components/flat_page'
-import WithAuth from './components/protector'
 import auth from './auth'
 import React from 'react'
 
-function isClient() {
-  return (typeof window !== 'undefined' && window.document && window.document.createElement)
-}
-
 function requireAuth(nextState, replace) {
-  if (!isClient()) {
-    return
-  }
-
-  if (!auth.loggedIn()) {
+  if (!auth.isLoggedIn()) {
     replace({
       pathname: '/login',
       state: { nextPathname: nextState.location.pathname }
@@ -27,12 +18,8 @@ function requireAuth(nextState, replace) {
   }
 }
 
-function redirToHome(nextState, replace) {
-  if (!isClient()) {
-    return
-  }
-
-  if (auth.loggedIn()) {
+function requireAnon(nextState, replace) {
+  if (auth.isLoggedIn()) {
     replace({
       pathname: '/home',
       state: { nextPathname: nextState.location.pathname }
@@ -48,24 +35,22 @@ function logout(nextState, replace) {
   })
 }
 
-
-/*const routes = (
+const routes = (
   <Router history={browserHistory}>
     <Route path='/' component={Layout}>
-      <IndexRoute component={LoginPage} onEnter={redirToHome}/>
-      <Route path='login' component={LoginPage} onEnter={redirToHome}/>
+      <IndexRoute component={HomePage} onEnter={requireAuth}/>
+      <Route path='login' component={LoginPage} onEnter={requireAnon}/>
       <Route path='logout' onEnter={logout}/>
-      <Route path='register' component={RegisterPage} onEnter={redirToHome}/>
+      <Route path='register' component={RegisterPage} onEnter={requireAnon}/>
       
       <Route path='home' component={HomePage} onEnter={requireAuth}/>
       <Route path='flat' component={FlatPage} onEnter={requireAuth}/>
     </Route>
     <Route path='*' component={NotFoundPage}/>
   </Router>
-)*/
+)
 
-const routes = (
-  //<Router history={browserHistory}>
+/*const routes = (
   <Route path='/' component={Layout}>
     <IndexRoute component={WithAuth(HomePage)} />
     <Route path='home' component={WithAuth(HomePage)} />
@@ -73,7 +58,6 @@ const routes = (
     <Route path='register' component={RegisterPage} />
     <Route path='*' component={NotFoundPage} />
   </Route>
-  //</Router>
-)
+)*/
 
 export default routes

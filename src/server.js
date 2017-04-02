@@ -17,8 +17,8 @@ const secret = 'rMWWrh2DtdWftD6JJTWG3nQjyEEstxJuUg2WqSbGHJyZcekxK7QC5gxtLMvQUPUr
 
 // initialize the server and configure support for ejs templates
 const app = new Express()
-app.set('view engine', 'ejs')
-app.set('views', path.join(__dirname, 'views'))
+//app.set('view engine', 'ejs')
+//app.set('views', path.join(__dirname, 'views'))
 
 // define the folder that will be used for static assets
 app.use(Express.static(path.join(__dirname, 'static')))
@@ -46,7 +46,7 @@ app.post('/auth', (req, res) => {
     last_name: 'akatov',
     email: 'yuraaka@somemail.com',
     id: 123
-  };
+  }
 
   var answer = {
     token: jwt.sign(profile, secret, { expiresIn: "5m" })
@@ -59,52 +59,7 @@ app.get('/api/auth_info', (req, res) => {
   res.json({ logged: true })
 })
 
-// universal routing and rendering
-app.get('*', (req, res) => {
-  match(
-    { routes, location: req.url },
-    (err, redirectLocation, renderProps) => {
-      // in case of error display the error message
-      if (err) {
-        return res.status(500).send(err.message)
-      }
-
-      // in case of redirect propagate the redirect to the browser
-      if (redirectLocation) {
-        return res.redirect(302, redirectLocation.pathname + redirectLocation.search)
-      }
-
-      let env = {
-        name: 'server',
-        verify(token, cb) {
-          jwt.verify(token, secret, null, (error, decoded) => {
-            cb(error === null)
-          })
-        }
-      }
-
-      // generate the React markup for the current route
-      let markup
-
-      if (renderProps) {
-        // if the current route matched we have renderProps
-        markup = renderToString(
-          <RouterContext
-            {...renderProps}
-            createElement={(Component, props) => { return <Component env={env} {...props} /> }}
-          />
-        )
-      } else {
-        // otherwise we can render a 404 page
-        markup = renderToString(<NotFoundPage />)
-        res.status(404)
-      }
-
-      // render the index template with the embedded React markup
-      return res.render('index', { markup })
-    }
-  )
-})
+app.use("*", Express.static(__dirname + '/static'));
 
 // start the server
 const port = process.env.PORT || 2406
