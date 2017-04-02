@@ -1,7 +1,19 @@
 import React from 'react'
+import auth from '../auth'
+import { browserHistory } from 'react-router'
 
 export default class FlatPage extends React.Component {
+  _logout() {
+    auth.logout()
+    browserHistory.push('/')
+  }
+
   render() {
-    return <div>myflat</div>
+    return (
+      <div>
+        <div>myflat</div>
+        <button onClick={this._logout.bind(this)}>Logout</button>
+      </div>
+    )
   }
 }

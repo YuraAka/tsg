@@ -10,6 +10,7 @@ import NotFoundPage from './components/not_found_page'
 import bodyParser from 'body-parser'
 import expressJwt from 'express-jwt'
 import jwt from 'jsonwebtoken'
+import DataProvider from './provider'
 
 // todo hide it out to config
 const secret = 'rMWWrh2DtdWftD6JJTWG3nQjyEEstxJuUg2WqSbGHJyZcekxK7QC5gxtLMvQUPUrWMcbfYvN'
@@ -17,6 +18,8 @@ const secret = 'rMWWrh2DtdWftD6JJTWG3nQjyEEstxJuUg2WqSbGHJyZcekxK7QC5gxtLMvQUPUr
 
 // initialize the server and configure support for ejs templates
 const app = new Express()
+const db = new DataProvider()
+
 //app.set('view engine', 'ejs')
 //app.set('views', path.join(__dirname, 'views'))
 
@@ -49,14 +52,15 @@ app.post('/auth', (req, res) => {
   }
 
   var answer = {
-    token: jwt.sign(profile, secret, { expiresIn: "5m" })
+    token: jwt.sign(profile, secret, { expiresIn: "10s" })
   }
 
   res.json(answer)
 })
 
-app.get('/api/auth_info', (req, res) => {
-  res.json({ logged: true })
+app.get('/api/fetch_news', (req, res) => {
+  //console.log(req.get('Authorization'))
+  res.json(db.fetchNews())
 })
 
 app.use("*", Express.static(__dirname + '/static'));

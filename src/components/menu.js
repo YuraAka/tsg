@@ -21,10 +21,6 @@ const ITEMS_FOR_USERS = [
   {
     title: 'Моя квартира',
     link: '/flat'
-  },
-  {
-    title: 'Выход',
-    link: '/logout'
   }
 ]
 

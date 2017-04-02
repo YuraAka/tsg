@@ -23,18 +23,19 @@ export default class LoginPage extends React.Component {
   onLoginCheck(loggedIn) {
     if (!loggedIn) {
       this.setState({ error: true })
-    } else {
-      this.props.router.transitionTo('/')
+      return
     }
 
-    /*const { location } = this.props
+    console.log('perform transition')
+      
+    const { location } = this.props
     this.setState({ error: false })
     // anti-react pattern, but I don't know how to make better (thru callback)
     if (location.state && location.state.nextPathname !== '/logout') {
       this.props.router.replace(location.state.nextPathname)
     } else {
       this.props.router.replace('/')
-    }*/
+    }
   }
 
   onFlatChange(event) {

@@ -6,6 +6,7 @@ import LoginPage from './components/login_page'
 import RegisterPage from './components/register_page'
 import HomePage from './components/home_page'
 import FlatPage from './components/flat_page'
+import ArticlePage from './components/article_page'
 import auth from './auth'
 import React from 'react'
 
@@ -27,24 +28,16 @@ function requireAnon(nextState, replace) {
   }
 }
 
-function logout(nextState, replace) {
-  auth.logout()
-  replace({
-    pathname: '/login',
-    state: { nextPathname: nextState.location.pathname }
-  })
-}
-
 const routes = (
   <Router history={browserHistory}>
     <Route path='/' component={Layout}>
       <IndexRoute component={HomePage} onEnter={requireAuth}/>
       <Route path='login' component={LoginPage} onEnter={requireAnon}/>
-      <Route path='logout' onEnter={logout}/>
       <Route path='register' component={RegisterPage} onEnter={requireAnon}/>
       
       <Route path='home' component={HomePage} onEnter={requireAuth}/>
       <Route path='flat' component={FlatPage} onEnter={requireAuth}/>
+      <Route path='news/:id' component={ArticlePage} onEnter={requireAuth}/>
     </Route>
     <Route path='*' component={NotFoundPage}/>
   </Router>
