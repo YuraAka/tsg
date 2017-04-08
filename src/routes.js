@@ -7,11 +7,11 @@ import RegisterPage from './components/register_page'
 import HomePage from './components/home_page'
 import FlatPage from './components/flat_page'
 import ArticlePage from './components/article_page'
-import auth from './auth'
+import ApiClient from './service/api_client'
 import React from 'react'
 
 function requireAuth(nextState, replace) {
-  if (!auth.isLoggedIn()) {
+  if (!ApiClient.isLoggedIn()) {
     replace({
       pathname: '/login',
       state: { nextPathname: nextState.location.pathname }
@@ -20,7 +20,7 @@ function requireAuth(nextState, replace) {
 }
 
 function requireAnon(nextState, replace) {
-  if (auth.isLoggedIn()) {
+  if (ApiClient.isLoggedIn()) {
     replace({
       pathname: '/home',
       state: { nextPathname: nextState.location.pathname }
@@ -42,15 +42,5 @@ const routes = (
     <Route path='*' component={NotFoundPage}/>
   </Router>
 )
-
-/*const routes = (
-  <Route path='/' component={Layout}>
-    <IndexRoute component={WithAuth(HomePage)} />
-    <Route path='home' component={WithAuth(HomePage)} />
-    <Route path='login' component={LoginPage} />
-    <Route path='register' component={RegisterPage} />
-    <Route path='*' component={NotFoundPage} />
-  </Route>
-)*/
 
 export default routes

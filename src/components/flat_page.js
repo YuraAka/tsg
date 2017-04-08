@@ -1,10 +1,10 @@
 import React from 'react'
-import auth from '../auth'
+import ApiClient from '../service/api_client'
 import { browserHistory } from 'react-router'
 
 export default class FlatPage extends React.Component {
   _logout() {
-    auth.logout()
+    ApiClient.logout()
     browserHistory.push('/')
   }
 

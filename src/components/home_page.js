@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link, browserHistory} from 'react-router'
-import auth from '../auth'
+import ApiClient from '../service/api_client'
 
 class ArticlePreview extends React.Component {
   render() {
@@ -20,27 +20,10 @@ export default class HomePage extends React.Component {
   }
 
   componentDidMount() {
-    console.log(localStorage.token)
-    fetch('/api/fetch_news', {
-      credentials: 'same-origin',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.token
+    ApiClient.loadNews({
+      onSuccess: articles => {
+        this.setState({articles: articles})
       }
-    }).then((res) => {
-      if (res.status === 401) {
-        // todo create DatabaseClient, encapsulating api requests and login redirects, token update
-        auth.logout()
-        browserHistory.push('/')
-        throw 'donotknow'
-      }
-
-      return res.json()
-    }).then((json) => {
-      this.setState({articles: json})
-    }).catch((err) => {
-      console.info(err)
     })
   }
 

@@ -1,5 +1,18 @@
-export default class DataProvider {
-  fetchNews() {
+export default class Database {
+  loadUser(flat, password) {
+      if (flat !== '17' || password !== '123') {
+        return null
+      }
+
+      return {
+        first_name: 'yura',
+        last_name: 'akatov',
+        email: 'yuraaka@somemail.com',
+        id: 123
+      }
+  }
+
+  loadNews() {
     return [
       {
         title: 'Mr. Brown birthday',

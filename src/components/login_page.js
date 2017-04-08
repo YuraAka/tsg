@@ -1,9 +1,5 @@
 import React from 'react'
-import Promise from 'es6-promise'
-import 'isomorphic-fetch'
-import auth from '../auth'
-
-Promise.polyfill()
+import ApiClient from '../service/api_client'
 
 export default class LoginPage extends React.Component {
   constructor() {
@@ -17,25 +13,31 @@ export default class LoginPage extends React.Component {
 
   onSubmit(event) {
     event.preventDefault()
-    auth.login(this.state.flat, this.state.password, this.onLoginCheck.bind(this))
-  }
-
-  onLoginCheck(loggedIn) {
-    if (!loggedIn) {
-      this.setState({ error: true })
-      return
-    }
-
-    console.log('perform transition')
-      
-    const { location } = this.props
-    this.setState({ error: false })
-    // anti-react pattern, but I don't know how to make better (thru callback)
-    if (location.state && location.state.nextPathname !== '/logout') {
-      this.props.router.replace(location.state.nextPathname)
-    } else {
-      this.props.router.replace('/')
-    }
+    ApiClient.login(
+      {
+        flat: this.state.flat,
+        password: this.state.password
+      },
+      {
+        onSuccess: () => {
+          console.log('ACCESS GRANTED')
+          const { location } = this.props
+          this.setState({ error: false })
+          
+          if (location.state && location.state.nextPathname !== '/logout') {
+            console.log('GOTO: ', location.state.nextPathname)
+            this.props.router.replace(location.state.nextPathname)
+          } else {
+            console.log('GOTO ROOT')
+            this.props.router.replace('/')
+          }
+        },
+        onFail: () => {
+          console.log('ACCESS DENIED')
+          this.setState({ error: true })
+        }
+      }
+    )
   }
 
   onFlatChange(event) {

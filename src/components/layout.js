@@ -1,17 +1,17 @@
 import React from 'react'
 import Menu from './menu'
-import auth from '../auth'
+import ApiClient from '../service/api_client'
 
 export default class Layout extends React.Component {
   constructor() {
     super()
     this.state = {
-      loggedIn : auth.isLoggedIn()
+      loggedIn : ApiClient.isLoggedIn()
     }
   }
 
   componentDidMount() {
-    this.unsubscribe = auth.subscribe((loggedIn) => {
+    this.unsubscribe = ApiClient.subscribe((loggedIn) => {
       this.setState({ loggedIn: loggedIn })
     })
   }
