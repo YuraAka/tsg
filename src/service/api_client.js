@@ -36,6 +36,13 @@ function invokeApi(req, method, cb, data=null) {
     fields.body = JSON.stringify(data)
   }
 
+  console.info(fields)
+  /*fetch('http://httpbin.org/headers', fields).then(res => {
+    return res.json()
+  }).then(json => {
+    console.info(json)
+  })*/
+
   fetch(req, fields).then((res) => {
     if (res.status >= 200 && res.status <= 300) {
       return res.json()
@@ -45,10 +52,6 @@ function invokeApi(req, method, cb, data=null) {
       .catch((err) => {
         console.error(err)
       })
-    }
-
-    if (res.status == 401) {
-      browserHistory.push('/login')
     }
 
     doFail(cb, res)
@@ -88,7 +91,6 @@ export default class ApiClient {
           notify(true)
         },
         onFail: () => {
-          console.info('BAD BAD')
           doFail(cb)
           notify(false)
         }
@@ -106,7 +108,34 @@ export default class ApiClient {
     return !!localStorage.token
   }
 
+  static _invoke(req, method, cb, data) {
+    let wrappedCb = {
+      onSuccess: (res) => {
+        doSuccess(cb, res)
+      },
+      onFail: res => {
+        if (res.status == 401) {
+          this.logout()
+          browserHistory.push('/login')
+        }
+        
+        doFail(cb, res)
+      }
+    }
+
+    invokeApi(req, method, wrappedCb, data)
+  }
+
   static loadNews(cb) {
-    invokeApi('/api/fetch_news', 'GET', cb)
+    this._invoke('/api/fetch_news', 'GET', cb)
+  }
+
+  static loadWater(cb) {
+    this._invoke('/api/load_water', 'GET', cb)
+  }
+
+  static sendWater(cb, data) {
+    console.info(data)
+    this._invoke('/api/send_water', 'POST', cb, data)
   }
 }

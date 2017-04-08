@@ -1,4 +1,5 @@
 TODO
+* уведомления для жильцов
 * form of water values
 * implement database
 * Load static news

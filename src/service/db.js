@@ -12,7 +12,7 @@ export default class Database {
       }
   }
 
-  loadNews() {
+  readNews() {
     return [
       {
         title: 'Mr. Brown birthday',
@@ -27,5 +27,34 @@ export default class Database {
         id: 2
       }
     ]
+  }
+
+  readWater() {
+    return [
+      {
+        date: 'Январь',
+        cold: 5,
+        hot: 15,
+        id: 1
+      },
+      {
+        date: 'Февраль',
+        cold: 15,
+        hot: 25,
+        id: 2
+      },
+      {
+        date: 'Март',
+        cold: 25,
+        hot: 35,
+        id: 3
+      }
+    ]
+  }
+
+  writeWater(data) {
+    console.info('Hot: ', data.hot)
+    console.info('Cold: ', data.cold)
+    return {now: 'Июнь 2017'}
   }
 }
