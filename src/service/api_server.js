@@ -20,13 +20,11 @@ export default class ApiServer {
     const user = this.db.loadUser(req.body.flat, req.body.password)
     if (!user) {
       console.info('BAD USER')
-      return
+      res.status(401).send('Wrong user or password')
+    } else {
+      res.json({
+        token: jwt.sign(user, secret, { expiresIn: "10h" })
+      })
     }
-
-    var answer = {
-      token: jwt.sign(user, secret, { expiresIn: "10h" })
-    }
-
-    res.json(answer)
   }
 }

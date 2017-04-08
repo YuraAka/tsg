@@ -1,6 +1,5 @@
 TODO
-* move all client calls to api
-* register form
+* form of water values
 * implement database
 * Load static news
 * Show personal info on flat page

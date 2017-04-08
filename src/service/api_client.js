@@ -1,5 +1,6 @@
 import 'isomorphic-fetch'
 import Promise from 'es6-promise'
+import { browserHistory } from 'react-router'
 
 let subscribers = []
 
@@ -18,7 +19,7 @@ function doFail(cb, data) {
     return
   }
 
-  cb.doFail(data)
+  cb.onFail(data)
 }
 
 function invokeApi(req, method, cb, data=null) {
@@ -38,18 +39,19 @@ function invokeApi(req, method, cb, data=null) {
   fetch(req, fields).then((res) => {
     if (res.status >= 200 && res.status <= 300) {
       return res.json()
+      .then((json) => {
+        doSuccess(cb, json)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
     }
 
     if (res.status == 401) {
       browserHistory.push('/login')
-      auth.logout()
     }
 
-    doFail(cb)
-    return res.json().then(Promise.reject.bind(Promise))
-    
-  }).then((json) => {
-    doSuccess(cb, json)
+    doFail(cb, res)
   })
 }
 
@@ -86,6 +88,7 @@ export default class ApiClient {
           notify(true)
         },
         onFail: () => {
+          console.info('BAD BAD')
           doFail(cb)
           notify(false)
         }
