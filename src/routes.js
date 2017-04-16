@@ -1,4 +1,3 @@
-//import {App, Login, Registration, News, MyFlat, NotFound} from './App'
 import { IndexRoute, Router, Route, browserHistory } from 'react-router'
 import Layout from './components/layout'
 import NotFoundPage from './components/not_found_page'

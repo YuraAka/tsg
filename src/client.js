@@ -1,3 +1,4 @@
+import 'es6-shim'
 import ReactDOM from 'react-dom'
 import Routing from './components/routing'
 import React from 'react'

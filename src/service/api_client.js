@@ -36,7 +36,6 @@ function invokeApi(req, method, cb, data=null) {
     fields.body = JSON.stringify(data)
   }
 
-  console.info(fields)
   /*fetch('http://httpbin.org/headers', fields).then(res => {
     return res.json()
   }).then(json => {
@@ -135,7 +134,6 @@ export default class ApiClient {
   }
 
   static sendWater(cb, data) {
-    console.info(data)
     this._invoke('/api/send_water', 'POST', cb, data)
   }
 }

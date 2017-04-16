@@ -95,10 +95,8 @@ export default class Database {
   }
 
   writeWater(data) {
-    console.info('Hot: ', data.hot)
-    console.info('Cold: ', data.cold)
     let wk = generateWaterKey()
-    // check for expiration
+    // todo: check for expiration
     const pos = this.waterIdx[wk.id]
     let cur = this.water[pos]
     cur.hot = data.hot

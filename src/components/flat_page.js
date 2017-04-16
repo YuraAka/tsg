@@ -38,6 +38,12 @@ class WaterStats extends React.Component {
       currentHot: '',
       currentCold: ''
     }
+
+    this.onChange = field => {
+      return function (ev) {
+        this.setState({[field]: ev.target.value})
+      }
+    }
   }
 
   componentDidMount() {
@@ -62,12 +68,6 @@ class WaterStats extends React.Component {
     })
   }
 
-  onInput(field) {
-    return function (ev) {
-      this.setState({[field]: ev.target.value})
-    }
-  }
-
   onSave() {
     ApiClient.sendWater(
       {
@@ -75,7 +75,6 @@ class WaterStats extends React.Component {
           this.setState({
             saved: true
           })
-          console.info('now is ', ans.now)
         },
         onFail: () => {
           this.setState({
@@ -106,20 +105,33 @@ class WaterStats extends React.Component {
             }
             <WaterInput
               date={this.state.currentTitle}
-              onHot={this.onInput('currentHot').bind(this)} 
-              onCold={this.onInput('currentCold').bind(this)} 
+              onHot={this.onChange('currentHot').bind(this)} 
+              onCold={this.onChange('currentCold').bind(this)} 
               onSave={this.onSave.bind(this)}
               cold={this.state.currentCold}
               hot={this.state.currentHot}
             />
           </tbody>
         </table>
-        {this.state.saved && (<div>Спасибо, честный гражданин</div>)}
+        {this.state.saved && (<div>Спасибо, ваши показания будут переданы в УК 20го числа</div>)}
         {this.state.error && (<div>Что-то пошло не так</div>)}
       </div>
     )
   }
 }
+
+class NotificationSubscription extends React.Component {
+  render() {
+    // отписаться
+    return (
+      <div>
+        <span>Почта: </span><input/>
+        <button>Подписаться</button>
+      </div>
+    )
+  }
+}
+
 
 export default class FlatPage extends React.Component {
   _logout() {
@@ -133,6 +145,7 @@ export default class FlatPage extends React.Component {
         <div>myflat</div>
         <button onClick={this._logout.bind(this)}>Logout</button>
         <WaterStats/>
+        <NotificationSubscription/>
       </div>
     )
   }

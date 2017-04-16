@@ -20,20 +20,16 @@ export default class LoginPage extends React.Component {
       },
       {
         onSuccess: () => {
-          console.log('ACCESS GRANTED')
           const { location } = this.props
           this.setState({ error: false })
           
           if (location.state && location.state.nextPathname !== '/logout') {
-            console.log('GOTO: ', location.state.nextPathname)
             this.props.router.replace(location.state.nextPathname)
           } else {
-            console.log('GOTO ROOT')
             this.props.router.replace('/')
           }
         },
         onFail: () => {
-          console.log('ACCESS DENIED')
           this.setState({ error: true })
         }
       }
