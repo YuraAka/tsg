@@ -35,12 +35,12 @@ export default class Database {
     this._prepareWater(10, 11, new Date(2017, 0))
     this._prepareWater(12, 13, new Date(2017, 1))
     this._prepareWater(14, 15, new Date(2017, 2))
+    this.articles = {}
   }
 
   _prepareWater(hot, cold, date) {
     let wk = generateWaterKey(date)
     if (wk.id in this.waterIdx) {
-      console.info('found key: ', wk)
       return wk
     }
 
@@ -52,7 +52,6 @@ export default class Database {
       current: wk.id == now.id
     })
 
-    console.info('insert: ', this.water[this.water.length - 1])
     this.waterIdx[wk.id] = this.water.length - 1
     return wk
   }
@@ -103,5 +102,22 @@ export default class Database {
     cur.cold = data.cold
 
     return wk
+  }
+
+  writeArticle(article) {
+    this.articles[article.id] = article.data
+    return {id: article.id}
+  }
+
+  readArticle(id) {
+    if (id in this.articles) {
+      return {
+        data: this.articles[id]
+      }
+    }
+  
+    return {
+      error: 'not found'
+    }
   }
 }

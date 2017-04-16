@@ -133,7 +133,16 @@ export default class ApiClient {
     this._invoke('/api/load_water', 'GET', cb)
   }
 
+  /// todo: rename to save
   static sendWater(cb, data) {
     this._invoke('/api/send_water', 'POST', cb, data)
+  }
+
+  static loadArticle(cb, id) {
+    this._invoke('/api/load_article?id=' + id, 'GET', cb)
+  }
+
+  static saveArticle(cb, data) {
+    this._invoke('/api/save_article', 'POST', cb, data)
   }
 }
