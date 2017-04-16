@@ -19,8 +19,8 @@ class WaterInput extends React.Component {
     return (
       <tr>
         <td>{this.props.date}</td>
-        <td><input placeholder='cold' onChange={this.props.onCold}/></td>
-        <td><input placeholder='hot' onChange={this.props.onHot} /></td>
+        <td><input type='number' value={this.props.cold} onChange={this.props.onCold}/></td>
+        <td><input type='number' value={this.props.hot} onChange={this.props.onHot} /></td>
         <td><button type='button' onClick={this.props.onSave}>Сохранить</button></td>
       </tr>
     )
@@ -33,14 +33,28 @@ class WaterStats extends React.Component {
     this.state = {
       saved: false,
       error: false,
-      history: []
+      history: [],
+      currentTitle: '',
+      currentHot: '',
+      currentCold: ''
     }
   }
 
   componentDidMount() {
     // load data from server
     ApiClient.loadWater({
-      onSuccess: (history) => {
+      onSuccess: (data) => {
+        let history = []
+        for (let record of data) {
+          if (record.current) {
+            this.setState({currentTitle: record.date.title})
+            this.setState({currentHot: record.hot})
+            this.setState({currentCold: record.cold})
+          } else {
+            history.push(record)
+          }
+        }
+
         this.setState({
           history: history
         })
@@ -48,38 +62,35 @@ class WaterStats extends React.Component {
     })
   }
 
-  render() {
-    let hot, cold
-    let onHot = ev => {
-      hot = ev.target.value
+  onInput(field) {
+    return function (ev) {
+      this.setState({[field]: ev.target.value})
     }
+  }
 
-    let onCold = ev => {
-      cold = ev.target.value
-    }
-
-    let onSave = () => {
-      ApiClient.sendWater(
-        {
-          onSuccess: (ans) => {
-            this.setState({
-              saved: true
-            })
-            console.info('now is ', ans.now)
-          },
-          onFail: () => {
-            this.setState({
-              error: true
-            })
-          }
+  onSave() {
+    ApiClient.sendWater(
+      {
+        onSuccess: (ans) => {
+          this.setState({
+            saved: true
+          })
+          console.info('now is ', ans.now)
         },
-        {
-          hot: hot,
-          cold: cold
+        onFail: () => {
+          this.setState({
+            error: true
+          })
         }
-      )
-    }
+      },
+      {
+        hot: this.state.currentHot,
+        cold: this.state.currentCold
+      }
+    )
+  }
 
+  render() {
     return (
       <div>
         <div>Показания за воду</div>
@@ -90,10 +101,17 @@ class WaterStats extends React.Component {
           <tbody>
             {
               this.state.history.map(row => {
-                return <WaterRow key={row.id} date={row.date} cold={row.cold} hot={row.hot}/>
+                return <WaterRow key={row.date.id} date={row.date.title} cold={row.cold} hot={row.hot}/>
               })
             }
-            <WaterInput date='Апрель 2017' onHot={onHot} onCold={onCold} onSave={onSave}/>
+            <WaterInput
+              date={this.state.currentTitle}
+              onHot={this.onInput('currentHot').bind(this)} 
+              onCold={this.onInput('currentCold').bind(this)} 
+              onSave={this.onSave.bind(this)}
+              cold={this.state.currentCold}
+              hot={this.state.currentHot}
+            />
           </tbody>
         </table>
         {this.state.saved && (<div>Спасибо, честный гражданин</div>)}

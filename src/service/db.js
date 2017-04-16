@@ -1,4 +1,62 @@
+function getMonthName(date) {
+  const months = [
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь'
+  ]
+
+  return months[date.getMonth()]
+}
+
+function generateWaterKey(date) {
+  if (!date) {
+    date = new Date()
+  }
+
+  return {
+    id: date.getFullYear() * 10000 + date.getMonth(),
+    title: getMonthName(date) + ' ' + date.getFullYear()
+  }
+}
+
 export default class Database {
+  constructor() {
+    this.waterIdx = {}
+    this.water = []
+    this._prepareWater(10, 11, new Date(2017, 0))
+    this._prepareWater(12, 13, new Date(2017, 1))
+    this._prepareWater(14, 15, new Date(2017, 2))
+  }
+
+  _prepareWater(hot, cold, date) {
+    let wk = generateWaterKey(date)
+    if (wk.id in this.waterIdx) {
+      console.info('found key: ', wk)
+      return wk
+    }
+
+    let now = generateWaterKey()
+    this.water.push({
+      date: wk,
+      cold: cold,
+      hot: hot,
+      current: wk.id == now.id
+    })
+
+    console.info('insert: ', this.water[this.water.length - 1])
+    this.waterIdx[wk.id] = this.water.length - 1
+    return wk
+  }
+
   loadUser(flat, password) {
       if (flat !== '17' || password !== '123') {
         return null
@@ -30,31 +88,22 @@ export default class Database {
   }
 
   readWater() {
-    return [
-      {
-        date: 'Январь',
-        cold: 5,
-        hot: 15,
-        id: 1
-      },
-      {
-        date: 'Февраль',
-        cold: 15,
-        hot: 25,
-        id: 2
-      },
-      {
-        date: 'Март',
-        cold: 25,
-        hot: 35,
-        id: 3
-      }
-    ]
+    this._prepareWater('', '', new Date())
+
+    // todo need refresh, but if we have a db, it is not needed
+    return this.water
   }
 
   writeWater(data) {
     console.info('Hot: ', data.hot)
     console.info('Cold: ', data.cold)
-    return {now: 'Июнь 2017'}
+    let wk = generateWaterKey()
+    // check for expiration
+    const pos = this.waterIdx[wk.id]
+    let cur = this.water[pos]
+    cur.hot = data.hot
+    cur.cold = data.cold
+
+    return wk
   }
 }
