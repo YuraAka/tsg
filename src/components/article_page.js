@@ -1,7 +1,10 @@
 import React from 'react'
-import {Editor, EditorState, RichUtils, convertToRaw, convertFromRaw} from 'draft-js'
-import {stateToHTML} from 'draft-js-export-html'
+import {EditorState, RichUtils, convertToRaw, convertFromRaw} from 'draft-js'
+//import {stateToHTML} from 'draft-js-export-html'
 import ApiClient from '../service/api_client'
+import { Editor } from 'react-draft-wysiwyg'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+//import '../static/css/react-draft-wysiwyg.css'
 
 class StyleButton extends React.Component {
   render() {
@@ -46,7 +49,7 @@ export default class Article extends React.Component {
     this.onSave = this._onSave.bind(this)
     this.onEdit = this._onEdit.bind(this)
     this.onTab = this._onTab.bind(this) // todo not working
-    this.focus = () => this.refs.editor.focus()
+    //this.focus = () => this.refs.editor.focus()
   }
 
   _onChange(editorState) {
@@ -119,17 +122,19 @@ export default class Article extends React.Component {
   }
 
   render() {
+    // {!this.state.readonly && <StylePanel onClick={this.onClick}/>}
+        
     return (
       <div>
-        {!this.state.readonly && <StylePanel onClick={this.onClick}/>}
         <div onClick={this.focus}>
-          <Editor 
-            editorState={this.state.editorState} 
-            onChange={this.onChange}
-            handleKeyCommand={this.onShortcut}
+          <Editor
+            toolbarHidden={this.state.readonly}
             readOnly={this.state.readonly}
-            spellCheck={true}
-            onTab={this.onTab}
+            editorState={this.state.editorState}
+            toolbarClassName="home-toolbar"
+            wrapperClassName="home-wrapper"
+            editorClassName="home-editor"
+            onEditorStateChange={this.onChange}
             ref='editor'
           />
         </div>
@@ -137,5 +142,7 @@ export default class Article extends React.Component {
         {this.state.readonly && <button onClick={this.onEdit}>Изменить</button>}
       </div>
     )
+
+    // uploadCallback={uploadImageCallBack}
   }
 }

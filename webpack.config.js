@@ -23,12 +23,15 @@ module.exports = {
   },
   module: {
     rules: [{
-      test: path.join(__dirname, 'src'),
+      test: /\.js$/,
       loader: 'babel-loader',
       query: {
         cacheDirectory: 'babel_cache',
         presets: ['react', 'es2015']
       }
+    }, {
+      test: /\.css$/,
+      loader: 'style-loader!css-loader?importLoaders=1',
     }]
   },
   plugins: debug ? [] : [
