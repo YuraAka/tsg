@@ -17,6 +17,11 @@ export default class HomePage extends React.Component {
   constructor() {
     super()
     this.state = {articles : []}
+    this.onAdd = this._onAdd.bind(this)
+  }
+
+  _onAdd() {
+    // go to new article page
   }
 
   componentDidMount() {
@@ -41,6 +46,10 @@ export default class HomePage extends React.Component {
             />
           })
         }
+
+        <div>
+          <Link to='/news/new'>Новая новость</Link>
+        </div>
       </div>
     )
   }

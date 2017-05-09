@@ -1,4 +1,5 @@
 TODO
+* добавить новость/удалить новость
 * уведомления для жильцов
 * form of water values
 * implement database

@@ -35,7 +35,24 @@ export default class Database {
     this._prepareWater(10, 11, new Date(2017, 0))
     this._prepareWater(12, 13, new Date(2017, 1))
     this._prepareWater(14, 15, new Date(2017, 2))
+
     this.articles = {}
+    this.nextArticleId = 0
+    //this._fillArticles()
+  }
+
+  _fillArticles() {
+    this.addArticle({
+      title: 'Mr. Brown birthday',
+      preview: 'mr brown is celebrating birthday today',
+      text: 'mr brown is celebrating birthday today, mr brown is celebrating birthday today, mr brown is celebrating birthday today'
+    })
+
+    this.addArticle({
+      title: 'First metting of new TSG members',
+      preview: '<i>TSG</i> government met after elections',
+      text: 'TSG <b>government</b> met after elections, TSG government met after elections'
+    })
   }
 
   _prepareWater(hot, cold, date) {
@@ -57,33 +74,42 @@ export default class Database {
   }
 
   loadUser(flat, password) {
-      if (flat !== '17' || password !== '123') {
-        return null
+      if (flat === '17' || password === '123') {
+        return {
+          first_name: 'yura',
+          last_name: 'akatov',
+          email: 'yuraaka@somemail.com',
+          admin: true,
+          id: 1
+        }
       }
 
-      return {
-        first_name: 'yura',
-        last_name: 'akatov',
-        email: 'yuraaka@somemail.com',
-        id: 123
+      if (flat === 18 || password === '321') {
+        return {
+          first_name: 'vasya',
+          last_name: 'pupkin',
+          email: 'pupking@somemail.com',
+          admin: false,
+          id: 2
+        }
       }
+
+      return null
   }
 
   readNews() {
-    return [
-      {
-        title: 'Mr. Brown birthday',
-        preview: 'mr brown is celebrating birthday today',
-        date: 1234566,
-        id: 1
-      },
-      {
-        title: 'First metting of new TSG members',
-        preview: 'TSG government met after elections',
-        date: 1234566,
-        id: 2
-      }
-    ]
+    let result = []
+    Object.keys(this.articles).forEach(key => {
+      let value = this.articles[key]
+      result.push({
+        title: value.title,
+        preview: value.preview,
+        date: value.date,
+        id: key
+      })
+    })
+
+    return result
   }
 
   readWater() {
@@ -119,5 +145,14 @@ export default class Database {
     return {
       error: 'not found'
     }
+  }
+
+  addArticle(data) {
+    let article = data
+    article.date = 1234566
+
+    let id = this.nextArticleId++
+    this.articles[id] = article
+    return id
   }
 }

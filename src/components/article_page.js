@@ -1,80 +1,26 @@
 import React from 'react'
 import {EditorState, RichUtils, convertToRaw, convertFromRaw} from 'draft-js'
-//import {stateToHTML} from 'draft-js-export-html'
 import ApiClient from '../service/api_client'
 import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-//import '../static/css/react-draft-wysiwyg.css'
-
-class StyleButton extends React.Component {
-  render() {
-    return (
-      <button onClick={this.props.onClick}>{this.props.name}</button>
-    )
-  }
-}
-
-class StylePanel extends React.Component {
-  _onClick(action, inline) {
-    return function() {
-      this.props.onClick(action, inline)
-    }
-  }
-
-  render() {
-    return (
-      <div>
-        <StyleButton onClick={this._onClick('BOLD', true).bind(this)} name={<b>B</b>}/>
-        <StyleButton onClick={this._onClick('ITALIC', true).bind(this)} name={<i>I</i>}/>
-        <StyleButton onClick={this._onClick('UNDERLINE', true).bind(this)} name={<u>U</u>}/>
-        <StyleButton onClick={this._onClick('unordered-list-item', false).bind(this)} name='UL'/>
-        <StyleButton onClick={this._onClick('ordered-list-item', false).bind(this)} name='OL'/>
-      </div>
-    )
-  }
-}
 
 export default class Article extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       editorState: EditorState.createEmpty(),
-      readonly: true
+      readonly: this.props.params.id !== 'new'
     }
 
-    /// todo apply good formatting from file:///Users/Yura/dev/react/draft-js/examples/draft-0-10-0/rich/rich.html
     this.onChange = this._onChange.bind(this)
-    this.onClick = this._onClick.bind(this)
-    this.onShortcut = this._onShortCut.bind(this)
     this.onSave = this._onSave.bind(this)
     this.onEdit = this._onEdit.bind(this)
-    this.onTab = this._onTab.bind(this) // todo not working
-    //this.focus = () => this.refs.editor.focus()
+
+    // ... handle new on save => invent id
   }
 
   _onChange(editorState) {
     this.setState({editorState: editorState})
-  }
-
-  _onClick(action, inline) {
-    if (inline) {
-      this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, action))
-    } else {
-      this.onChange(RichUtils.toggleBlockType(this.state.editorState, action))
-    }
-  }
-
-  _onShortCut(command) {
-    const newState = RichUtils.handleKeyCommand(this.state.editorState, command)
-    if (newState) {
-      this.onChange(newState)
-      return true
-    }
-    return false
-  }
-
-  _onTab(e) {
-    this.onChange(RichUtils.onTab(e, this.state.editorState, 2))
   }
 
   _onSave() {
@@ -122,8 +68,6 @@ export default class Article extends React.Component {
   }
 
   render() {
-    // {!this.state.readonly && <StylePanel onClick={this.onClick}/>}
-        
     return (
       <div>
         <div onClick={this.focus}>

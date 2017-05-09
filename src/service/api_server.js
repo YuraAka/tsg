@@ -22,7 +22,8 @@ export default class ApiServer {
       res.status(401).send('Wrong flat or password')
     } else {
       res.json({
-        token: jwt.sign(user, secret, { expiresIn: "10h" })
+        token: jwt.sign(user, secret, { expiresIn: "10h" }),
+        user: user
       })
     }
   }
