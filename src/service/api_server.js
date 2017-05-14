@@ -14,6 +14,7 @@ export default class ApiServer {
     this.app.post('/api/send_water', this.sendWater.bind(this))
     this.app.post('/api/save_article', this.saveArticle.bind(this))
     this.app.get('/api/load_article', this.loadArticle.bind(this))
+    this.app.post('/api/add_article', this.addArticle.bind(this))
   }
 
   authUser(req, res) {
@@ -46,5 +47,9 @@ export default class ApiServer {
 
   saveArticle(req, res) {
     res.json(this.db.writeArticle(req.body))
+  }
+
+  addArticle(req, res) {
+    res.json(this.db.addArticle(req.body))
   }
 }

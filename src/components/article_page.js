@@ -15,8 +15,6 @@ export default class Article extends React.Component {
     this.onChange = this._onChange.bind(this)
     this.onSave = this._onSave.bind(this)
     this.onEdit = this._onEdit.bind(this)
-
-    // ... handle new on save => invent id
   }
 
   _onChange(editorState) {
@@ -24,14 +22,30 @@ export default class Article extends React.Component {
   }
 
   _onSave() {
-    const content = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()))
-    ApiClient.saveArticle(
-      {
-        onSuccess: (ans) => {
+    if (this.props.params.id === 'new') {
+      this._sendContent(
+        ApiClient.addArticle,
+        (ans) => {
+          this.props.router.replace('/home')
+        }
+      )
+    } else {
+      this._sendContent(
+        ApiClient.saveArticle,
+        (ans) => {
           this.setState({
             readonly: true
           })
-        },
+        }
+      )
+    }
+  }
+
+  _sendContent(sender, onSuccess) {
+    const content = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()))
+    sender(
+      {
+        onSuccess: onSuccess,
         onFail: () => {
           this.setState({
             error: true

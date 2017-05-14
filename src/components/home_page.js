@@ -17,11 +17,6 @@ export default class HomePage extends React.Component {
   constructor() {
     super()
     this.state = {articles : []}
-    this.onAdd = this._onAdd.bind(this)
-  }
-
-  _onAdd() {
-    // go to new article page
   }
 
   componentDidMount() {

@@ -98,6 +98,7 @@ export default class Database {
   }
 
   readNews() {
+    console.info('ARTICLES: ', this.articles)
     let result = []
     Object.keys(this.articles).forEach(key => {
       let value = this.articles[key]
@@ -109,6 +110,8 @@ export default class Database {
       })
     })
 
+    console.info('OUTPUT: ', result)
+    
     return result
   }
 
@@ -130,16 +133,19 @@ export default class Database {
     return wk
   }
 
-  writeArticle(article) {
-    this.articles[article.id] = article.data
-    return {id: article.id}
+  writeArticle(src) {
+    let article = this.articles[src.id]
+    
+    article.data = src.data
+    article.date = 1234566
+    article.preview = 'preview-' + src.id
+    article.title = 'title-' + src.id
+    return {}
   }
 
   readArticle(id) {
     if (id in this.articles) {
-      return {
-        data: this.articles[id]
-      }
+      return this.articles[id]
     }
   
     return {
@@ -147,12 +153,18 @@ export default class Database {
     }
   }
 
-  addArticle(data) {
-    let article = data
-    article.date = 1234566
-
+  addArticle(src) {
+    console.info('ADD ARTICLE: ', src)
     let id = this.nextArticleId++
-    this.articles[id] = article
+    this.articles[id] = {
+      data: src.data,
+      date: 1234566,
+      id: id,
+      preview: 'preview-' + id,
+      title: 'title-' + id
+    }
+
+    console.info('RESULT: ARTICLES: ', this.articles)
     return id
   }
 }
